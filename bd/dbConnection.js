@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     await mongoose.connect('mongodb+srv://admin:admin@cluster0.cmedzom.mongodb.net/', {
-      useNewUrlParser: true,
-  useUnifiedTopology: true,
+      // Remove the deprecated options
+      // useNewUrlParser: true,
+      // useUnifiedTopology: true,
     });
     console.log('Connected to MongoDB');
   } catch (error) {
