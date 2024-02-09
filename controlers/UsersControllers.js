@@ -1,7 +1,7 @@
-// controllers/userController.js
 const User = require('../models/usermodel');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+
 exports.signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -47,8 +47,19 @@ exports.signup = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Failed to send OTP' });
       } else {
+        // Construct the URL for the profile picture
+        const serverUrl = req.protocol + '://' + req.get('host');
+        const profile_picture = serverUrl + '/uploads/' + req.file.filename;
+
         // Save user to the database after OTP is sent successfully
-        const newUser = new User({ username, email, password, otp });
+        const newUser = new User({
+          username,
+          email,
+          password,
+          otp,
+          profile_picture: profile_picture, // Save the URL instead of just the filename
+        });
+
         await newUser.save();
 
         res.status(201).json({ message: 'OTP sent successfully' });
