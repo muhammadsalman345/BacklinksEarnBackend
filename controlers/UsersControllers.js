@@ -92,3 +92,40 @@ exports.verifyOTP = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+exports.signIn = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validate email and password
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Check if the user is active
+    if (!user.isVerified) {
+      return res.status(401).json({ message: 'User is not active. Please verify your email.' });
+    }
+
+    // Check if the provided password matches the stored password
+    if (password === user.password) {
+      // Passwords match, create a JWT token
+      const token = jwt.sign({ email: user.email }, 'your_secret_key', { expiresIn: '1h' });
+      res.status(200).json({ message: 'User signed in successfully', token });
+    } else {
+      // Passwords do not match
+      res.status(401).json({ message: 'Invalid email or password' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

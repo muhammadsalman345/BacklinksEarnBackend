@@ -1,6 +1,16 @@
 // usermodel.js
+
+
+
+
 const mongoose = require('mongoose');
 
+
+//sign in 
+
+
+
+// sign up scchma
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
   email: { type: String, required: true, unique: true },
